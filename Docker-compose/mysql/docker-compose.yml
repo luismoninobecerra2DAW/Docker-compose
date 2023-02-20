@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  db:
+    image: mysql:debian
+    restart: always
+    environment:
+      MYSQL_DATABASE: database
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: admin_password
+    volumes:
+      - database_data:/var/lib/mysql
+    networks:
+      - mysql-network
+
+  phpmyadmin:
+    image: phpmyadmin:apache
+    restart: always
+    ports:
+      - '8080:80'
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: admin_password
+    networks:
+      - mysql-network
+
+networks:
+  mysql-network:
+
+volumes:
+  database_data:

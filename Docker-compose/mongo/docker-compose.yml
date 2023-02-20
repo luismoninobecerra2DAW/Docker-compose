@@ -1,0 +1,39 @@
+version: '2'
+services:
+  mi-mongo:
+    image: mongo:latest
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=rootuser
+      - MONGO_INITDB_ROOT_PASSWORD=rootpass
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - mi-mongo-red
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=rootuser
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=rootpass
+      - ME_CONFIG_MONGODB_SERVER=mi-mongo
+    networks:
+      - mi-mongo-red
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mi-mongo
+
+
+volumes:
+  mongodb-data:
+    driver: local
+networks:
+  mi-mongo-red:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.16.0.0/16
